@@ -60,6 +60,16 @@
             Sesión cerrada correctamente.
         </div>
 
+        <!-- Botón instalar PWA — visible antes del login si el navegador lo soporta -->
+        <div id="installContainer" class="mb-4" style="display:none;">
+            <button id="btnInstall" class="btn btn-install text-white w-100 py-2">
+                <i class="bi bi-phone-fill me-2"></i>Instalar App en este dispositivo
+            </button>
+            <p class="text-muted text-center small mt-2 mb-0">
+                Accede rápidamente desde la pantalla de inicio
+            </p>
+        </div>
+
         <form method="post" th:action="@{/login}">
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
 
@@ -85,17 +95,6 @@
                 <i class="bi bi-box-arrow-in-right me-2"></i>Ingresar
             </button>
         </form>
-
-        <!-- Botón instalar PWA — solo visible si el navegador lo soporta -->
-        <div id="installContainer" class="mt-3" style="display:none;">
-            <hr class="my-3"/>
-            <button id="btnInstall" class="btn btn-install text-white w-100 py-2">
-                <i class="bi bi-phone-fill me-2"></i>Instalar App en este dispositivo
-            </button>
-            <p class="text-muted text-center small mt-2 mb-0">
-                Accede rápidamente desde la pantalla de inicio
-            </p>
-        </div>
         <!-- Instrucciones para iOS (Safari no soporta el evento automático) -->
         <div id="iosInstall" class="mt-3" style="display:none;">
             <hr class="my-3"/>
