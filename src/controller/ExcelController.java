@@ -38,6 +38,14 @@ public class ExcelController {
 
             // Título
             Row rowTitulo = sheet.createRow(fila++);
+            // ... (restaurar el resto del método y utilidades según la versión original)
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(parentView, "Error al exportar historial: " + ex.getMessage());
+        }
+    }
+
+    // ... (restaurar otros métodos y utilidades según la versión original)
+}
             Cell cTitulo = rowTitulo.createCell(0);
             cTitulo.setCellValue("Sistema de Préstamos — Historial de Pagos");
             cTitulo.setCellStyle(estiloTitulo);

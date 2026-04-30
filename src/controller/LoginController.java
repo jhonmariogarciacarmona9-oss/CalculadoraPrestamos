@@ -37,6 +37,23 @@ public class LoginController {
         }
 
         String hashIngresado = Usuario.hashPassword(password);
+        try (Connection conn = ConexionDB.getConexion()) {
+            PreparedStatement ps = conn.prepareStatement("SELECT * FROM usuarios WHERE usuario = ? AND password = ?");
+            ps.setString(1, username);
+            ps.setString(2, hashIngresado);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                loginView.dispose();
+                CalculadoraView calculadoraView = new CalculadoraView();
+                calculadoraView.setVisible(true);
+            } else {
+                loginView.mostrarError("Usuario o contraseña incorrectos.");
+            }
+        } catch (SQLException ex) {
+            loginView.mostrarError("Error de conexión a la base de datos.");
+        }
+    }
+}
 
         try {
             Connection conn = ConexionDB.getInstance().getConexion();

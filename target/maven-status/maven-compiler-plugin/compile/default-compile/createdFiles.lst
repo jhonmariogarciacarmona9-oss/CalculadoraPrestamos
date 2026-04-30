@@ -1,0 +1,10 @@
+com\calculadora\model\Prestamo.class
+com\calculadora\controller\ExcelWebController.class
+com\calculadora\controller\LoginWebController.class
+com\calculadora\controller\PrestamoController.class
+com\calculadora\model\Prestamo$TipoCuota.class
+com\calculadora\model\Cliente.class
+com\calculadora\CalculadoraApp.class
+com\calculadora\config\SecurityConfig.class
+com\calculadora\controller\LoginController.class
+com\calculadora\controller\RootRedirectController.class

@@ -40,7 +40,7 @@
 <nav class="navbar navbar-expand-lg py-2" style="background: linear-gradient(90deg, #1e3a5f, #2563eb);">
     <div class="container">
         <span class="navbar-brand text-white">
-            <i class="bi bi-cash-stack me-2"></i>Sistema de Préstamos
+            <i class="bi bi-cash-stack me-2"></i>SOMOS TRES
         </span>
         <div class="ms-auto d-flex gap-2">
             <form method="post" th:action="@{/nuevo}" class="m-0">
@@ -87,7 +87,9 @@
                         <tr th:each="p, iStat : ${activos}">
                             <td th:text="${iStat.count}" class="text-muted"></td>
                             <td>
-                                <span class="fw-semibold" th:text="${p.nombre} + ' ' + ${p.apellido}"></span>
+                                <a th:href="@{'/prestamo/' + ${p.id}}" class="fw-semibold text-decoration-underline text-primary" title="Ver y registrar pagos">
+                                    <span th:text="${p.nombre} + ' ' + ${p.apellido}"></span>
+                                </a>
                             </td>
                             <td th:text="${p.documento}"></td>
                             <td th:text="'$' + ${#numbers.formatDecimal(p.monto_prestado, 1, 'COMMA', 2, 'POINT')}"></td>

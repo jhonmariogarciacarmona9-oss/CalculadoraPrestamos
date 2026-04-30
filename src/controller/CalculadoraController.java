@@ -38,6 +38,15 @@ public class CalculadoraController {
         String nombre    = view.getTxtNombre();
         String apellido  = view.getTxtApellido();
         String documento = view.getTxtDocumento();
+        // ... (restaurar el resto del método y lógica de negocio según la versión original)
+    }
+
+    private void registrarPago(ActionEvent e) {
+        // ... (restaurar lógica de registro de pago)
+    }
+
+    // ... (restaurar otros métodos y utilidades según la versión original)
+}
         String direccion = view.getTxtDireccion();
         String montoStr  = view.getTxtMonto();
         String tasaStr   = view.getTxtTasa();

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Lista de Préstamos</title>
+    <link rel="manifest" th:href="@{/manifest.json}"/>
+    <meta name="theme-color" content="#2563eb"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"/>
+    <style>
+        body { background: #f0f4f8; }
+        .navbar-brand { font-weight: 700; letter-spacing: .5px; }
+        .section-title {
+            font-size: 1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .05em;
+            border-left: 4px solid;
+            padding-left: .6rem;
+            margin-bottom: 1rem;
+        }
+        .section-title.activos  { border-color: #2563eb; color: #1e3a5f; }
+        .section-title.liquidados { border-color: #16a34a; color: #14532d; }
+        .badge-activo    { background: #dbeafe; color: #1d4ed8; }
+        .badge-liquidado { background: #dcfce7; color: #15803d; }
+        .table th { font-size: .78rem; text-transform: uppercase; color: #64748b; }
+        .table td { font-size: .88rem; vertical-align: middle; }
+        .empty-msg { font-size: .9rem; color: #94a3b8; text-align: center; padding: 1.5rem 0; }
+    </style>
+</head>
+<body>
+<!-- Navbar -->
+
+<!-- Mostrar error de BD si existe -->
+<div th:if="${errorBD}" class="alert alert-warning mx-2 mt-3 small">
+    <i class="bi bi-exclamation-triangle-fill me-1"></i>
+    Error al cargar datos: <span th:text="${errorBD}"></span>
+</div>
+<nav class="navbar navbar-expand-lg py-2" style="background: linear-gradient(90deg, #1e3a5f, #2563eb);">
+    <div class="container">
+        <span class="navbar-brand text-white">
+            <i class="bi bi-cash-stack me-2"></i>SOMOS TRES
+        </span>
+        <div class="ms-auto d-flex gap-2">
+            <form method="post" th:action="@{/nuevo}" class="m-0">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                <button type="submit" class="btn btn-light btn-sm px-3">
+                    <i class="bi bi-plus-circle me-1"></i>Nuevo Préstamo
+                </button>
+            </form>
+            <a th:href="@{/logout}" class="btn btn-outline-light btn-sm px-3">
+                <i class="bi bi-box-arrow-right me-1"></i>Salir
+            </a>
+        </div>
+    </div>
+</nav>
+
+<div class="container py-4">
+
+    <!-- Préstamos Activos -->
+    <h2 class="section-title activos">
+        <i class="bi bi-hourglass-split me-1"></i>Préstamos Activos
+    </h2>
+
+    <div class="card shadow-sm mb-5">
+        <div class="card-body p-0">
+            <div th:if="${#lists.isEmpty(activos)}" class="empty-msg">
+                <i class="bi bi-inbox me-2"></i>No hay préstamos activos.
+            </div>
+            <div class="table-responsive" th:unless="${#lists.isEmpty(activos)}">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>#</th>
+                            <th>Cliente</th>
+                            <th>Documento</th>
+                            <th>Monto</th>
+                            <th>Tipo</th>
+                            <th>Progreso</th>
+                            <th>Saldo Restante</th>
+                            <th>Avalador</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="p, iStat : ${activos}">
+                            <td th:text="${iStat.count}" class="text-muted"></td>
+                            <td>
+                                <a th:href="@{'/prestamo/' + ${p.id}}" class="fw-semibold text-decoration-underline text-primary" title="Ver y registrar pagos">
+                                    <span th:text="${p.nombre} + ' ' + ${p.apellido}"></span>
+                                </a>
+                            </td>
+                            <td th:text="${p.documento}"></td>
+                            <td th:text="'$' + ${#numbers.formatDecimal(p.monto_prestado, 1, 'COMMA', 2, 'POINT')}"></td>
+                            <td>
+                                <span class="badge bg-primary" th:text="${p.tipo_cuota}"></span>
+                            </td>
+                            <td>
+                                <span th:text="${p.cuotas_pagadas} + ' / ' + ${p.numero_cuotas}"></span>
+                                <div class="progress mt-1" style="height:4px;">
+                                    <div class="progress-bar bg-primary"
+                                         th:style="'width:' + (${p.numero_cuotas} > 0 ? (${p.cuotas_pagadas} * 100 / ${p.numero_cuotas}) : 0) + '%'"></div>
+                                </div>
+                            </td>
+                            <td class="fw-semibold text-danger"
+                                th:text="'$' + ${#numbers.formatDecimal(p.saldo_restante, 1, 'COMMA', 2, 'POINT')}"></td>
+                            <td th:text="${p.avala_por != null ? p.avala_por : '—'}"></td>
+                            <td><span class="badge badge-activo rounded-pill px-2">Activo</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Préstamos Liquidados -->
+    <h2 class="section-title liquidados">
+        <i class="bi bi-check2-circle me-1"></i>Préstamos Liquidados
+    </h2>
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-body p-0">
+            <div th:if="${#lists.isEmpty(liquidados)}" class="empty-msg">
+                <i class="bi bi-inbox me-2"></i>No hay préstamos liquidados aún.
+            </div>
+            <div class="table-responsive" th:unless="${#lists.isEmpty(liquidados)}">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>#</th>
+                            <th>Cliente</th>
+                            <th>Documento</th>
+                            <th>Monto</th>
+                            <th>Tipo</th>
+                            <th>Cuotas</th>
+                            <th>Total Pagado</th>
+                            <th>Avalador</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="p, iStat : ${liquidados}">
+                            <td th:text="${iStat.count}" class="text-muted"></td>
+                            <td>
+                                <span class="fw-semibold" th:text="${p.nombre} + ' ' + ${p.apellido}"></span>
+                            </td>
+                            <td th:text="${p.documento}"></td>
+                            <td th:text="'$' + ${#numbers.formatDecimal(p.monto_prestado, 1, 'COMMA', 2, 'POINT')}"></td>
+                            <td>
+                                <span class="badge bg-secondary" th:text="${p.tipo_cuota}"></span>
+                            </td>
+                            <td th:text="${p.numero_cuotas} + ' cuotas'"></td>
+                            <td class="fw-semibold text-success"
+                                th:text="'$' + ${#numbers.formatDecimal(p.total_a_pagar, 1, 'COMMA', 2, 'POINT')}"></td>
+                            <td th:text="${p.avala_por != null ? p.avala_por : '—'}"></td>
+                            <td><span class="badge badge-liquidado rounded-pill px-2">Liquidado</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
