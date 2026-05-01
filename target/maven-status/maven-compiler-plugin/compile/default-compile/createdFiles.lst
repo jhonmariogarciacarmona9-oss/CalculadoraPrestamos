@@ -7,4 +7,5 @@ com\calculadora\model\Cliente.class
 com\calculadora\CalculadoraApp.class
 com\calculadora\config\SecurityConfig.class
 com\calculadora\controller\LoginController.class
+com\calculadora\controller\PrestamosWebController.class
 com\calculadora\controller\RootRedirectController.class
