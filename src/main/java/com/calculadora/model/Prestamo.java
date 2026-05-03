@@ -5,7 +5,20 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 
+@Entity
+@Table(name = "prestamos")
 public class Prestamo implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -23,22 +36,48 @@ public class Prestamo implements Serializable {
         }
     }
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private int id;
+
+    @ManyToOne
+    @JoinColumn(name = "cliente_id", nullable = false)
     private Cliente cliente;
+
+    @Column(name = "monto_prestado", nullable = false)
     private double montoPrestado;
+
+    @Column(name = "tasa_porcentaje", nullable = false)
     private double tasaPorcentaje;
+
+    @Column(name = "numero_cuotas", nullable = false)
     private int numeroCuotas;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "tipo_cuota", nullable = false)
     private TipoCuota tipoCuota;
+
+    @Column(name = "avalado_por")
     private String avaladoPor;
 
-    // Calculados
+    @Column(name = "valor_cuota")
     private double valorCuota;
+
+    @Column(name = "total_a_pagar")
     private double totalAPagar;
+
+    @Column(name = "saldo_restante")
     private double saldoRestante;
+
+    @Column(name = "cuotas_pagadas")
     private int cuotasPagadas;
+
+    @Column(name = "estado")
     private String estado; // "ACTIVO" | "LIQUIDADO"
 
-    // Historial: {nCuota, valorPagado, saldoRestante, fecha}
+    // Historial en memoria — no persisted
+    @Transient
     private List<String[]> historial = new ArrayList<>();
 
     public Prestamo() {}
